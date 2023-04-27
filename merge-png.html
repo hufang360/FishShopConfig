@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>合并png</title>
+	<!-- <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.2.3/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+
+<style>
+	.btn-outline-secondary {
+		--bs-btn-border-color: var(--bs-border-color);
+	}
+</style>
+
+<body>
+	<div class="container" style="border:1px solid #ced4da;border-radius: 0.2rem;">
+		<div class="col mb-1 mt-1">
+			<button class="btn btn-outline-secondary btn-sm" onclick="onClearBtn()">清空画板</button>
+
+			<button class="btn btn-outline-secondary btn-sm" onclick="onExportBtn()">下载合图</button>
+			<button class="btn btn-outline-secondary btn-sm" onclick="onCopyBtn()">复制拆图信息</button>
+		</div>
+
+		<div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+				<label class="form-check-label" for="flexRadioDefault1">合并物品图标（items.png）</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+				<label class="form-check-label" for="flexRadioDefault2">合并buff图标（buffs.png）</label>
+			</div>
+		</div>
+		<div class="row">
+			<div>
+				<textarea class="form-control mb-1" id="spiteInfo" placeholder="拆图信息"></textarea>
+			</div>
+			<div>
+				<canvas id="canvas" width=640 height="576" style="border:2px dashed #ced4da;"></canvas>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+</body>
+
+<script>
+
+	let canvas = document.getElementById('canvas');
+	let context = canvas.getContext("2d");
+	let infoEl = document.getElementById("spiteInfo")
+	let infoValue = ""
+	let imgObjects = []; //x y w h ix iy iw ih...
+	canvas.ondragenter = function () {
+		return false;
+	};
+
+	canvas.ondragover = function () {
+		return false;
+	};
+	var posCaculate = function () { };
+
+	var refresh = function () {
+		clear();
+		// 排序
+		let isItem = GetRadioValue() == 0 ? true : false
+		if (isItem) {
+			// 物品icon 用 bintree 方法排序
+			imgObjects.sort(function (a, b) {
+				if (b.h - a.h != 0) {
+					return b.h - a.h;
+				} else {
+					return a.w - b.w;
+				}
+			})
+		} else {
+			// buff icon 用id排序
+			imgObjects.sort(function (a, b) {
+				let v1 = a["id"]
+				let v2 = b["id"]
+				if (v1 > v2) return 1
+				if (v1 < v2) return -1
+				return 0
+			})
+		}
+
+		let limitWidth = 1024;
+		let rowNum = isItem ? 40 : 20;
+		let lastX = 0;
+		let lastY = 0;
+		let preY = 0;
+		let curWidth = 0;
+
+		// 计算画布高度
+		imgObjects.map(function (o, i) {
+
+			if ((i % rowNum == 0 && !isItem) || lastX + o.w > limitWidth) {
+				lastX = 0;
+				lastY = preY
+			}
+			curWidth = Math.max(curWidth, lastX + o.w)
+			preY = Math.max(preY, lastY + o.h)
+			lastX += o.w;
+
+		})
+		if (preY != 0) {
+			canvas.height = preY
+		}
+		canvas.width = GetRadioValue() == 0 ? Math.min(curWidth, limitWidth) : 640
+
+		// 绘制到画布
+		lastX = 0;
+		lastY = 0;
+		preY = 0;
+		let paramArr = []
+		imgObjects.map(function (o, i) {
+			if ((i % rowNum == 0 && !isItem) || lastX + o.w > limitWidth) {
+				lastX = 0;
+				lastY = preY
+			}
+			context.drawImage(o.el, o.x, o.y, o.w, o.h, lastX, lastY, o.w, o.h);
+			paramArr.push(`${o.id},${lastX},${lastY},${o.w},${o.h}`)
+
+			preY = Math.max(preY, lastY + o.h)
+			lastX += o.w;
+		})
+		infoValue = paramArr.join("~")
+		infoEl.value = infoValue
+	};
+	canvas.ondrop = function (e) {
+		var files = e.dataTransfer.files;
+		var numbers = files.length;
+		for (var i = 0; i < files.length; i++) {
+			var f = files[i];
+			if (f.type.indexOf('image') == 0) {
+				(function (f) {
+					var name = f.name,
+						type = f.type;
+					if (typeof FileReader == 'undefined') {
+						alert('Sorry, FileReader() not supported, switch to Chrome and try again.')
+					}
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						var dataURL = e.target.result;
+						var imgEL = new Image();
+						imgEL.onload = function (e) {
+							let w, h;
+							w = parseInt(imgEL.width);
+							h = parseInt(imgEL.height);
+							let x = 0;
+							let y = 0;
+							let cropInfo = findCropInfo(name)
+							if (cropInfo.hasOwnProperty("x") ) {
+								if (cropInfo.x != 0) x = cropInfo.x;
+								if (cropInfo.y != 0) y = cropInfo.y;
+								if (cropInfo.w != 0) w = cropInfo.w;
+								if (cropInfo.h != 0) h = cropInfo.h;
+							}
+							let oId = parseInt(name.split("_").pop())
+							if (isNaN(oId)) oId = 0
+							imgObjects.push({ el: imgEL, x: x, y: y, w: w, h: h, name: name, id: oId, type: type, base64: dataURL });
+							--numbers;
+							if (numbers === 0) {
+								posCaculate();
+								refresh();
+							}
+						}
+						imgEL.src = dataURL;
+					};
+					reader.readAsDataURL(f);
+				})(f);
+			}
+		}
+		e.stopPropagation();
+		e.preventDefault();
+	};
+	var drawCallBack = null;
+
+	var clear = function () {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+	};
+
+	function onClearBtn() {
+		infoEl.value = ""
+		imgObjects = []
+		clear()
+	}
+
+	function onExportBtn() {
+		let linkEl = document.createElement('a');
+		linkEl.download = GetRadioValue() == 0 ? "items.png" : "buffs.png";
+		linkEl.href = canvas.toDataURL();
+		linkEl.style.display = "none";
+		document.body.appendChild(linkEl);
+		linkEl.click();
+		document.body.removeChild(linkEl);
+	}
+
+	function onCopyBtn() {
+		let currentFocus = document.activeElement;
+		infoEl.focus();
+		infoEl.select();
+		let flag = false
+		try {
+			flag = document.execCommand("copy");
+		} catch (err) {
+			flag = false;
+		}
+		currentFocus.focus()
+
+		if (flag) {
+			alert("已复制到剪贴板中")
+		} else {
+			alert("复制失败")
+		}
+	}
+
+	// 获得单选框的值
+	function GetRadioValue() {
+		var ele = document.getElementsByName('flexRadioDefault');
+		for (i = 0; i < ele.length; i++) {
+			if (ele[i].checked) {
+				return i
+			}
+		}
+		return 0
+	}
+
+	context.font = '36pt "MicrosoftYahei"';
+	context.fillStyle = "#6c757d";
+	context.fillText("将一张/多张图片拖动到此处...", 20, 640 / 2 - 40);
+	context.font = '10pt Calibri';
+
+	// 物品图标原图裁剪信息
+	InitCropInfo()
+	function InitCropInfo() {
+		let itemCropArr = `75,0,26,0,0~520,0,28,0,0~4070,0,24,0,0~521,0,28,0,0~575,0,28,0,0~548,0,28,0,0~549,0,28,0,0~547,0,28,0,0~3455,0,28,0,0~3453,0,28,0,0~3454,0,28,0,0~3581,0,28,0,0~3580,0,28,0,0~4068,0,24,0,0~4069,0,24,0,0~353,0,20,0,0~357,0,24,0,0~967,0,17,0,0~969,0,17,0,0~1787,0,26,0,0~1911,0,32,0,0~1912,0,34,0,0~1919,0,28,0,0~1920,0,34,0,0~2266,0,32,0,0~2267,0,24,0,0~2268,0,30,0,0~2425,0,18,0,0~2426,0,18,0,0~2427,0,18,0,0~3195,0,26,0,0~3532,0,32,0,0~4009,0,28,0,0~4010,0,22,0,0~4011,0,24,0,0~4012,0,30,0,0~4013,0,28,0,0~4014,0,26,0,0~4015,0,26,0,0~4016,0,26,0,0~4017,0,30,0,0~4018,0,30,0,0~4019,0,20,0,0~4020,0,18,0,0~4021,0,30,0,0~4022,0,24,0,0~4023,0,30,0,0~4024,0,26,0,0~4025,0,18,0,0~4026,0,36,0,0~4027,0,42,0,0~4028,0,30,0,0~4029,0,28,0,0~4030,0,34,0,0~4031,0,20,0,0~4032,0,24,0,0~4033,0,18,0,0~4034,0,22,0,0~4035,0,28,0,0~4036,0,20,0,0~4037,0,24,0,0~4282,0,28,0,0~4283,0,32,0,0~4284,0,30,0,0~4285,0,26,0,0~4286,0,34,0,0~4287,0,26,0,0~4288,0,28,0,0~4289,0,32,0,0~4290,0,26,0,0~4291,0,30,0,0~4292,0,26,0,0~4293,0,26,0,0~4294,0,34,0,0~4295,0,30,0,0~4296,0,34,0,0~4297,0,26,0,0~4403,0,24,0,0~4411,0,24,0,0~4614,0,34,0,0~4615,0,34,0,0~4616,0,34,0,0~4617,0,34,0,0~4618,0,34,0,0~4619,0,34,0,0~4620,0,34,0,0~4621,0,34,0,0~4622,0,34,0,0~4623,0,42,0,0~4624,0,34,0,0~4625,0,30,0,0~5009,0,26,0,0~5041,0,42,0,0~5042,0,26,0,0~5092,0,34,0,0~5093,0,30,0,0~5275,0,30,0,0~5277,0,26,0,0~5278,0,26,0,0`.split("~")
+		itemCropObjs = [];
+		for (const s of itemCropArr) {
+			let arr = s.split(",")
+			itemCropObjs.push({ name: `Item_${arr[0]}.png`, w: parseInt(arr[1]), h: parseInt(arr[2]), x: parseInt(arr[3]), y: parseInt(arr[4]) })
+		}
+	}
+	// 3665 机关宝箱
+
+	function findCropInfo(pngName) {
+		for (const o of itemCropObjs) {
+			if (o.name === pngName) {
+				return o;
+			}
+		}
+		return {}
+	}
+</script>
+
+</html>

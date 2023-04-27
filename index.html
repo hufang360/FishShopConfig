@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>鱼店配置</title>
+	<!-- <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.2.3/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+	<div class="container">
+		<!-- 导入导出 -->
+		<div class="mx-2 mt-2 mb-3">
+			<div class="row">
+				<div class="input-group input-group-sm">
+					<input class="form-control form-control-sm" type="file" accept="application/json" id="importFile">
+					<button class="btn btn-outline-secondary btn-sm" title="导出json" id="exportFile">导出</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="mx-2 mb-1">
+			<div class="row" id="shopMeta" style="display: none;">
+				<div class="input-group input-group-sm mb-1">
+					<span class="input-group-text">店铺名称</span>
+					<input type="text" class="form-control" id="shopName" value="鱼店" placeholder="店铺名称">
+				</div>
+				<div class="input-group input-group-sm">
+					<span class="input-group-text">单页个数</span>
+					<input type="number" min="4" max="2000" class="form-control" id="pageSlots" value=40
+						placeholder="一页展示多少个商品">
+					<span class="input-group-text">单行个数</span>
+					<input type="number" min="1" max="20" class="form-control" id="rowSlots" value=10
+						placeholder="一行展示多少个商品">
+				</div>
+			</div>
+		</div>
+
+		<!-- 表格 （table） -->
+		<!-- table-striped  -->
+		<!-- table-group-divider -->
+		<div class="mx-2">
+			<table id="table" data-toggle="table" class="table table-sm table-hover table-bordered">
+				<thead>
+					<tr>
+						<th style="background-color: #e9ecef;">商品</th>
+						<th style="background-color: #e9ecef;">花费</th>
+						<th style="background-color: #e9ecef;">条件</th>
+						<th style="background-color: #e9ecef;">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tableBody">
+					<tr>
+						<td style="color: #656d77; font-size: .75rem;">
+							<p>没有数据，你可以：</p>
+							<label for="importFile">1、点击&nbsp;“选择文件”&nbsp;按钮，导入json文件；</label>
+							<p>2、点击
+								<span class="btn-group btn-group-sm">
+									<button class="btn btn-outline-secondary btn-sm"
+										onclick="AddTableEL(this)">+</button>
+								</span>
+								添加商品；
+							</p>
+							3、点击
+							<span class="btn-group btn-group-sm">
+								<button class="btn btn-outline-secondary btn-sm"
+									onclick="LoadRawConfig(this)">↻</button>
+							</span>
+							载入一份默认配置；
+						</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<!-- Modal -->
+			<!-- style="z-index: 1040; display: block;" -->
+			<!-- <div class="modal fade show" id="frmModal" data-bs-backdrop="static" style="z-index: 1040; display: block;"> -->
+			<div class="modal fade" id="frmModal" data-bs-backdrop="static">
+				<div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+					<div class="modal-content">
+
+						<div class="modal-header">
+							<label class="modal-title" id="frmTitle"></label>
+							<button type="button" class="btn-close btn-sm" data-bs-dismiss="modal"></button>
+						</div>
+
+						<div class="modal-body">
+
+							<div class="row mb-1">
+								<div class="col">
+									<div class="input-group input-group-sm">
+										<span class="input-group-text"><canvas id="frmItemIcon" width=32 height=32
+												data-item=0></span>
+										<input type="text" class="form-control" id="frmItemName" placeholder="名称"
+											title="商品名称" onchange="ChangeItemName(this)">
+										<input type="number" max="5452" class="form-control" id="frmItemId"
+											placeholder="id" title="物品id，原版物品id:1~5452" onchange="ChangeItemId(this)">
+										<input type="number" class="form-control" min="1" max="9999" id="frmItemStack"
+											placeholder="堆叠">
+										<select class="form-select input-group-sm col-2" id="frmItemPrefix">
+											<option value="" selected>词缀</option>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<!-- 备注 -->
+							<div class="row mb-3">
+								<div class="col-md">
+									<textarea class="form-control" id="frmItemComment" placeholder="备注" rows="1"
+										style="font-size:0.75rem"></textarea>
+								</div>
+							</div>
+
+							<!-- 限量、全服限量、组限制 -->
+							<div class="row mb-1">
+								<div class="input-group input-group-sm">
+									<input class="form-control" type="number" min="0" max="9999" id="frmLimit"
+										placeholder="单人限量">
+									<input class="form-control" type="number" min="0" max="9999" id="frmServerLimit"
+										placeholder="全服限量">
+									<input type="text" class="form-control" id="frmAllowGroup"
+										placeholder="组限制，多个用英文逗号(,)隔开">
+								</div>
+							</div>
+
+							<!-- 指令 -->
+							<div class="row mb-1">
+								<div class="col-md">
+									<textarea class="form-control" id="frmCommand" rows="1" data-bs-toggle="autosize"
+										placeholder="指令清单，一行一条" style="font-size:0.75rem; display: none;"></textarea>
+								</div>
+							</div>
+
+							<!-- buff -->
+							<div class="row mb-3 gap-1" id="frmBuff" style="display: none;"></div>
+
+							<!-- 价格 -->
+							<label>花费：</label>
+							<div class="row mb-3 gap-1" id="frmCost"></div>
+
+							<!-- 条件 -->
+							<label>解锁条件：</label>
+							<div class="row mb-3 gap-1" id="frmUnlock"></div>
+
+
+							<!-- <div class="row mb-3">
+							<a href="https://shimo.im/sheets/gO3oxEZL0zuyDyqD/y0PPl" target="_blank">鱼店速查</a>
+						</div> -->
+
+						</div>
+
+						<div class="modal-footer">
+							<div class="col text-end">
+								<button type="button" class="btn btn-outline-secondary btn-sm"
+									data-bs-dismiss="modal">取消</button>
+								<button type="button" class="btn btn-outline-secondary btn-sm" id="frmConfirm"
+									data-bs-dismiss="modal">确定</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="card-footer text-muted text-center" style="font-size: .75rem;" id="versionText">
+			<!-- 鱼店配置编辑器 v0.1(20230427) -->
+		</div>
+	</div>
+
+	<!-- 删除确认 -->
+	<div class="modal" id="delModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<p class="modal-title fs-5">删除确认</p>
+					<button type="button" class="btn-close btn-sm" data-bs-dismiss="modal"></button>
+				</div>
+				<p class="modal-body" id="delModalContent"></p>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal"
+						id="delModalConfirm">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- javascript 脚本 -->
+	<!-- <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script> -->
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<!-- 主脚本 -->
+	<script src="js/main.js"></script>
+	<!-- 物品/buff 等名称 -->
+	<script src="js/data.js"></script>
+	<!-- settings.json -->
+	<script src="js/settings.js"></script>
+	<script src="js/config.js"></script>
+	<!-- img/items.png -->
+	<script src="img/items.js"></script>
+</body>
+
+</html>
