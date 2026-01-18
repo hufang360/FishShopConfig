@@ -101,8 +101,8 @@
 												data-item=0></span>
 										<input type="text" class="form-control" id="frmItemName" placeholder="名称"
 											title="商品名称" onchange="ChangeItemName(this)">
-										<input type="number" max="5452" class="form-control" id="frmItemId"
-											placeholder="id" title="物品id，原版物品id:1~5452" onchange="ChangeItemId(this)">
+										<input type="number" max="5455" class="form-control" id="frmItemId"
+											placeholder="id" title="物品id，原版物品id:1~5455" onchange="ChangeItemId(this)">
 										<input type="number" class="form-control" min="1" max="9999" id="frmItemStack"
 											placeholder="堆叠">
 										<select class="form-select input-group-sm col-2" id="frmItemPrefix">
@@ -174,8 +174,18 @@
 	</div>
 
 	<div class="container">
-		<div class="card-footer text-muted text-center" style="font-size: .75rem;" id="versionText">
+		<div class="card-footer text-muted mx-2" style="font-size: .75rem; text-align: left;" id="versionText">
 			<!-- 鱼店配置编辑器 v0.1(20230427) -->
+		</div>
+		<br />
+		<div class="card-footer text-muted mx-2" style="font-size: .75rem;">
+			相关连接：
+			<ul class="mx-2 px-1">
+				<li><a href="./merge-png.html"  class="a-gray-muted" title="物品、buff图标合并工具">精灵图合并工具</a></li>
+				<li><a href="./rest.html" class="a-gray-muted">TShock REST API</a></li>
+				<li><a href="./search.html" class="a-gray-muted">物品查询工具</a></li>
+				<li><a href="https://github.com/hufang360/FishShopConfig" target="_blank" class="a-gray-muted">🐙源码</a></li>
+			</ul>
 		</div>
 	</div>
 

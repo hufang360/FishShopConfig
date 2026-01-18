@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>物品查询</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<style>
+		body {
+			background-color: #549EE6;
+		}
+
+		.search-container {
+			max-width: 1200px;
+			margin: 50px auto;
+			padding: 20px;
+		}
+
+		h2, #resultCount, .no-results {
+			color: white;
+		}
+
+		#searchInput {
+			font-size: 1.1rem;
+			color: white;
+			background-color: rgba(255, 255, 255, 0.1);
+			border-color: rgba(255, 255, 255, 0.5);
+		}
+
+		#searchInput::placeholder {
+			color: rgba(255, 255, 255, 0.6);
+		}
+
+		#searchInput:focus {
+			background-color: rgba(255, 255, 255, 0.15);
+			border-color: rgba(255, 255, 255, 0.8);
+			color: white;
+			box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+		}
+
+		#searchBtn, #clearBtn {
+			border-color: rgba(255, 255, 255, 0.5);
+			color: white;
+		}
+
+		#searchBtn:hover, #clearBtn:hover {
+			background-color: rgba(255, 255, 255, 0.2);
+			border-color: rgba(255, 255, 255, 0.8);
+		}
+
+		#resultCount {
+			font-size: 0.9rem;
+			margin-bottom: 10px;
+		}
+
+		#searchResults {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+			gap: 12px;
+			padding: 12px;
+			background-color: transparent;
+			border-color: rgba(255, 255, 255, 0.5) !important;
+		}
+
+		.result-item {
+			border: 1px solid rgba(255, 255, 255, 0.5);
+			border-radius: 8px;
+			padding: 12px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+			cursor: pointer;
+			transition: all 0.2s;
+			background-color: rgba(255, 255, 255, 0.1);
+		}
+
+		.result-item:hover {
+			background-color: rgba(255, 255, 255, 0.2);
+			border-color: rgba(255, 255, 255, 0.8);
+			transform: translateY(-2px);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+		}
+
+		.item-icon {
+			width: 48px;
+			height: 48px;
+			image-rendering: pixelated;
+			image-rendering: crisp-edges;
+		}
+
+		.item-id {
+			font-weight: bold;
+			color: white;
+			font-size: 1rem;
+			cursor: pointer;
+			user-select: none;
+			transition: color 0.2s;
+		}
+
+		.item-id:hover {
+			color: rgba(255, 255, 255, 0.8);
+			text-decoration: underline;
+		}
+
+		.item-name {
+			text-align: center;
+			font-size: 1rem;
+			font-weight: bold;
+			color: white;
+			word-break: break-word;
+			line-height: 1.3;
+			max-height: 2.6em;
+			overflow: hidden;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+		}
+
+		mark {
+			background-color: rgba(255, 255, 255, 0.3);
+			color: inherit;
+			padding: 0;
+		}
+
+		.loading {
+			text-align: center;
+			padding: 20px;
+			color: white;
+		}
+
+		.no-results {
+			text-align: center;
+			padding: 40px;
+			white-space: nowrap;
+		}
+
+		.toast-body {
+			color: #333;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container search-container">
+		<h2 class="mb-3">物品ID查询</h2>
+
+		<!-- 搜索输入 -->
+		<div class="input-group input-group-lg mb-3">
+			<input type="text" class="form-control" id="searchInput" placeholder="输入物品名称或ID进行查询..." autocomplete="off">
+			<button class="btn btn-outline-secondary" type="button" id="searchBtn">搜索</button>
+		</div>
+
+		<!-- 结果数量 -->
+		<div id="resultCount"></div>
+
+		<!-- 搜索结果 -->
+		<div id="searchResults" class="border rounded">
+			<div class="no-results">
+				请输入物品名称进行搜索
+			</div>
+		</div>
+	</div>
+
+	<!-- 提示消息 -->
+	<div class="toast-container position-fixed bottom-0 end-0 p-3">
+		<div id="copyToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-body">
+				已复制到剪贴板
+			</div>
+		</div>
+	</div>
+
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/data.js"></script>
+	<script src="img/items.js"></script>
+	<script>
+		const searchInput = document.getElementById('searchInput');
+		const searchBtn = document.getElementById('searchBtn');
+		const clearBtn = document.getElementById('clearBtn');
+		const searchResults = document.getElementById('searchResults');
+		const resultCount = document.getElementById('resultCount');
+		const copyToast = document.getElementById('copyToast');
+
+		let searchTimeout = null;
+		let itemsPngEl = new Image();
+		let itemsPngReady = false;
+		let itemsPngTodo = [];
+
+		// 初始化物品图标裁剪信息
+		if (typeof itemsPngInfo === 'undefined' && typeof itemCropArr !== 'undefined') {
+			itemsPngInfo = {};
+			const arr = itemCropArr.split('~');
+			for (let i = 0; i < arr.length; i++) {
+				const parts = arr[i].split(',');
+				itemsPngInfo[i + 1] = {
+					x: parseInt(parts[1]),
+					y: parseInt(parts[2]),
+					w: parseInt(parts[3]),
+					h: parseInt(parts[4])
+				};
+			}
+		}
+
+		// 清空画布
+		function ClearCanvas(iconEl) {
+			if (typeof (iconEl) == 'undefined' || iconEl == '') {
+				return
+			}
+			const ctx = iconEl.getContext('2d');
+			ctx.clearRect(0, 0, iconEl.width, iconEl.height);
+		}
+
+		// 设置物品图标
+		function SetItemIcon(id, iconEl) {
+			ClearCanvas(iconEl);
+
+			if (id == 0) {
+				return;
+			}
+
+			// 首次加载 items.png
+			if (itemsPngEl.src == '') {
+				itemsPngTodo.push(iconEl);
+				itemsPngEl.onload = () => {
+					itemsPngReady = true;
+					for (const el of itemsPngTodo) {
+						if (el == '' || typeof (el) == 'undefined') continue;
+						DrawItemIcon(parseInt(el.dataset['id']), el);
+					}
+					delete itemsPngTodo;
+				};
+				itemsPngEl.src = "img/items.png";
+			}
+
+			// 绘制图标
+			if (!itemsPngReady) {
+				iconEl.dataset['id'] = id;
+				itemsPngTodo.push(iconEl);
+			} else {
+				DrawItemIcon(id, iconEl);
+			}
+		}
+
+		// 绘制物品图标到对应的画板
+		function DrawItemIcon(id, iconEl) {
+			const info = itemsPngInfo[id.toString()];
+			if (typeof (info) == 'undefined') {
+				return;
+			}
+
+			const max = iconEl.height;
+			// 始终等比放大到画布大小
+			let scale = Math.min(max / info.w, max / info.h);
+			let dW = Math.round(info.w * scale);
+			let dH = Math.round(info.h * scale);
+			let dX = Math.floor((max - dW) / 2);
+			let dY = Math.floor((max - dH) / 2);
+
+			const ctx = iconEl.getContext('2d');
+
+			// 使用邻近插值算法（nearest-neighbor）进行缩放，保持像素风格
+			ctx.imageSmoothingEnabled = false;
+			ctx.mozImageSmoothingEnabled = false;
+			ctx.webkitImageSmoothingEnabled = false;
+			ctx.msImageSmoothingEnabled = false;
+
+			ctx.clearRect(0, 0, iconEl.width, iconEl.height);
+			ctx.drawImage(itemsPngEl, info.x, info.y, info.w, info.h, dX, dY, dW, dH);
+		}
+
+		// 获取物品图标canvas
+		function getItemIconCanvas(itemId) {
+			const canvas = document.createElement('canvas');
+			canvas.width = 48;
+			canvas.height = 48;
+			canvas.className = 'item-icon';
+			SetItemIcon(itemId, canvas);
+			return canvas;
+		}
+
+		// 执行搜索
+		function performSearch() {
+			const query = searchInput.value.trim().toLowerCase();
+
+			if (!query) {
+				searchResults.innerHTML = '<div class="no-results">请输入物品名称或ID进行搜索</div>';
+				resultCount.textContent = '';
+				return;
+			}
+
+			let results = [];
+
+			// 判断是否为纯数字（ID查询）
+			const isNumericQuery = /^\d+$/.test(query);
+
+			if (isNumericQuery) {
+				// ID查询：精确匹配或前缀匹配
+				const targetId = parseInt(query);
+				for (let i = 0; i < itemNames.length; i++) {
+					const itemId = i + 1;
+					// 精确匹配ID或ID前缀匹配
+					if (itemId === targetId || itemId.toString().startsWith(query)) {
+						results.push({ id: itemId, name: itemNames[i] || '(未命名)' });
+					}
+				}
+			} else {
+				// 名称查询：部分匹配
+				for (let i = 0; i < itemNames.length; i++) {
+					const itemName = itemNames[i];
+					if (itemName && itemName.toLowerCase().includes(query)) {
+						results.push({ id: i + 1, name: itemName });
+					}
+				}
+			}
+
+			displayResults(results, query, isNumericQuery);
+		}
+
+		// 显示搜索结果
+		function displayResults(results, query, isNumericQuery) {
+			if (results.length === 0) {
+				searchResults.innerHTML = '<div class="no-results">未找到匹配的物品</div>';
+				resultCount.textContent = '找到 0 个结果';
+				return;
+			}
+
+			// 高亮匹配的文字
+			function highlightMatch(text, query) {
+				const index = text.toLowerCase().indexOf(query);
+				if (index === -1) return text;
+				return text.substring(0, index) +
+					'<mark>' + text.substring(index, index + query.length) + '</mark>' +
+					text.substring(index + query.length);
+			}
+
+			// 高亮匹配的ID
+			function highlightId(id, query) {
+				const idStr = id.toString();
+				const index = idStr.indexOf(query);
+				if (index === -1) return idStr;
+				return idStr.substring(0, index) +
+					'<mark>' + idStr.substring(index, index + query.length) + '</mark>' +
+					idStr.substring(index + query.length);
+			}
+
+			let html = '';
+			results.forEach(item => {
+				const displayId = isNumericQuery ? highlightId(item.id, query) : item.id;
+				const displayName = isNumericQuery ? item.name : highlightMatch(item.name, query);
+				html += `
+					<div class="result-item">
+						<div class="item-icon" data-item-id="${item.id}"></div>
+						<div class="item-id" onclick="copyItemId(${item.id})">${displayId}</div>
+						<div class="item-name">${displayName}</div>
+					</div>
+				`;
+			});
+
+			searchResults.innerHTML = html;
+			resultCount.textContent = `找到 ${results.length} 个结果`;
+
+			// 延迟加载图标
+			setTimeout(() => {
+				document.querySelectorAll('.item-icon[data-item-id]').forEach(iconEl => {
+					const itemId = parseInt(iconEl.dataset.itemId);
+					const canvas = getItemIconCanvas(itemId);
+					iconEl.parentNode.replaceChild(canvas, iconEl);
+				});
+			}, 100);
+		}
+
+		// 复制物品ID
+		function copyItemId(id) {
+			navigator.clipboard.writeText(id.toString()).then(() => {
+				const toast = new bootstrap.Toast(copyToast);
+				toast.show();
+			});
+		}
+
+		// 事件监听
+		searchInput.addEventListener('input', () => {
+			clearTimeout(searchTimeout);
+			searchTimeout = setTimeout(performSearch, 300);
+		});
+
+		searchInput.addEventListener('keypress', (e) => {
+			if (e.key === 'Enter') {
+				performSearch();
+			}
+		});
+
+		searchBtn.addEventListener('click', performSearch);
+
+		clearBtn.addEventListener('click', () => {
+			searchInput.value = '';
+			searchInput.focus();
+			performSearch();
+		});
+
+		// 页面加载后聚焦输入框
+		searchInput.focus();
+	</script>
+</body>
+
+</html>

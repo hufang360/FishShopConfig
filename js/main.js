@@ -15,7 +15,7 @@ var prefixNames = []
 var itemsPngInfo = {}
 InitSpriteEl()
 
-const ItemCount = 5452
+const ItemCount = 5455
 const NpcCount = 687
 // const BuffCount = 354
 
@@ -54,7 +54,7 @@ document.getElementById("importFile").onchange = (e) => {
 	reader.readAsText(e.target.files[0])
 }
 
-document.getElementById("versionText").innerText = "鱼店配置编辑器 v0.1(20230427)"
+document.getElementById("versionText").innerText = "鱼店配置编辑器 v0.1(20260119)"
 
 // 导出文件
 document.getElementById("exportFile").onclick = (e) => {

@@ -43,3 +43,31 @@ td>p {
 	margin-left: 0.25rem;
 	color: #d63939;
 }
+
+.a-gray-muted {
+	color: #6c757d;
+	text-decoration: none;
+}
+
+.a-gray-muted:hover {
+	color: #495057;
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 4px;
+	text-decoration-color: #495057;
+	font-weight: bold;
+}
+
+.a-blue-muted {
+	color: #0d6efd;
+	text-decoration-line: none;
+}
+
+.a-blue-muted:hover {
+	color: #0a58ca;
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 4px;
+	text-decoration-color: #0a58ca;
+	font-weight: bold;
+}
