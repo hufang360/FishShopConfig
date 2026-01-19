@@ -40,17 +40,17 @@
 			box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
 		}
 
-		#searchBtn {
+		#searchBtn, #clearBtn {
 			border-color: rgba(255, 255, 255, 0.5);
 			color: white;
 		}
 
-		#searchBtn:hover {
+		#searchBtn, #clearBtn:hover {
 			background-color: rgba(255, 255, 255, 0.2);
 			border-color: rgba(255, 255, 255, 0.8);
 		}
 
-		#resultCount {
+		#resultCount, #copyButtons {
 			font-size: 0.9rem;
 			margin-bottom: 10px;
 		}
@@ -64,7 +64,7 @@
 		}
 
 		.result-item {
-			border-radius: 12px;
+			border-radius: 6px;
 			padding: 2px 0 10px 0;
 			display: flex;
 			flex-direction: column;
@@ -82,8 +82,8 @@
 		}
 
 		.item-icon {
-			width: 96px;
-			height: 96px;
+			width: 72px;
+			height: 72px;
 			image-rendering: pixelated;
 			image-rendering: crisp-edges;
 		}
@@ -148,33 +148,112 @@
 			white-space: nowrap;
 		}
 
-		.toast-body {
-			color: #333;
-		}
+select.form-select {
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='white' fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+/* 搜索页面选择器样式 */
+.search-select {
+	width: 140px;
+	max-width: 180px;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.5);
+	color: white;
+}
+
+.toast-body {
+	color: #333;
+}
+
+.a-white-muted {
+	color: rgba(255, 255, 255, 0.8);
+	text-decoration-line: none;
+}
+
+.a-white-muted:hover {
+	color: white;
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 4px;
+	font-weight: bold;
+}
 	</style>
 </head>
 
 <body>
-	<div class="container search-container">
+	<div class="container search-container mt-1">
 		<h2 class="mb-3">物品ID查询</h2>
 
 		<!-- 搜索输入 -->
 		<div class="input-group input-group-lg mb-3">
 			<input type="text" class="form-control" id="searchInput" placeholder="输入物品名称或ID进行查询..." autocomplete="off">
-			<select class="form-select" id="searchType" style="width:80px; max-width: 110px; background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.5); color: white;">
-				<option value="item" selected>物品</option>
-				<option value="buff">Buff</option>
-			</select>
+			<button class="btn btn-outline-secondary" type="button" id="clearBtn" style="display: none;">&times;</button>
 			<button class="btn btn-outline-secondary" type="button" id="searchBtn">搜索</button>
 		</div>
 
+		<div class="d-flex mb-2 gap-2">
+		<!-- 类型选择 -->
+		<div class="input-group">
+			<select class="form-select search-select" id="searchType">
+				<option value="item" selected>物品</option>
+				<option value="buff">Buff</option>
+			</select>
+		</div>
+
+		<!-- ID范围选择 -->
+		<div id="rangeSelectContainer">
+			<select class="form-select search-select" id="rangeSelect">
+				<option value="">ID范围</option>
+			</select>
+		</div>
+
+		<!-- 特殊集合选择 -->
+		<div id="collectionSelectContainer">
+			<select class="form-select search-select" id="collectionSelect">
+				<option value="">集合</option>
+			</select>
+		</div>
+		<!-- 职业集合选择 -->
+		<div id="classSelectContainer">
+			<select class="form-select search-select" id="classSelect">
+				<option value="">职业</option>
+			</select>
+		</div>
+		<!-- 水友集合选择 -->
+		<div id="friendSelectContainer">
+			<select class="form-select search-select" id="friendSelect">
+				<option value="">水友专属</option>
+			</select>
+		</div>
+		</div>
 		<!-- 结果数量 -->
-		<div id="resultCount"></div>
+		<div class="d-flex align-items-center mb-2">
+			<div id="resultCount" class="mx-1"></div>
+			<div id="copyButtons"  style="display: none;">
+				<a href="#" class="a-white-muted mx-2" id="copyAll">复制</a>
+				<a href="#" class="a-white-muted mx-2" id="copyIds">复制id</a>
+				<a href="#" class="a-white-muted mx-2" id="copyNames">复制名字</a>
+			</div>
+		</div>
 
 		<!-- 搜索结果 -->
 		<div id="searchResults" class="">
 			<div class="no-results">
 			</div>
+		</div>
+	</div>
+
+	<div class="container search-container">
+		<div class="card-footer text-muted mx-2" style="font-size: .75rem;">
+			<span style="color: rgba(255, 255, 255, 0.8)">参考连接：</span>
+			<a href="https://terraria.wiki.gg/zh/wiki/%E7%89%A9%E5%93%81_ID" target="_blank" class="a-white-muted mx-1">物品_ID</a>
+			<a href="https://terraria.wiki.gg/zh/wiki/NPC_ID" target="_blank" class="a-white-muted mx-1">NPC_ID</a>
+			<a href="https://terraria.wiki.gg/zh/wiki/%E5%9B%BE%E6%A0%BC_ID" target="_blank" class="a-white-muted mx-1">图格_ID</a>
+			<a href="https://terraria.wiki.gg/zh/wiki/%E6%95%B0%E6%8D%AE_ID" target="_blank" class="a-white-muted mx-1">数据_ID</a>
+			<a href="https://terraria.wiki.gg/zh/wiki/Weapons" target="_blank" class="a-white-muted mx-1">武器</a>
+			<a href="https://terraria.wiki.gg/zh/wiki/Cell_Phone" target="_blank" class="a-white-muted mx-1">手机</a>
+			<a href="https://terraria.wiki.gg/zh/wiki/zenith" target="_blank" class="a-white-muted mx-1">天顶剑</a>
+			<a href="https://terraria.wiki.gg/zh/wiki/Terraspark_Boots" target="_blank" class="a-white-muted mx-1">泰拉靴</a>
+			<a href="https://terraria.wiki.gg/zh/wiki/Vanity_items" target="_blank" class="a-white-muted mx-1">时装</a>
 		</div>
 	</div>
 
@@ -190,337 +269,7 @@
 	<script src="js/bootstrap.bundle.min.js"></script>
 	<script src="js/data.js"></script>
 	<script src="img/items.js"></script>
-	<script>
-		const searchInput = document.getElementById('searchInput');
-		const searchBtn = document.getElementById('searchBtn');
-		const searchResults = document.getElementById('searchResults');
-		const resultCount = document.getElementById('resultCount');
-		const copyToast = document.getElementById('copyToast');
-		const searchType = document.getElementById('searchType');
-		const titleEl = document.querySelector('h2');
-
-		let searchTimeout = null;
-		let itemsPngEl = new Image();
-		let itemsPngReady = false;
-		let itemsPngTodo = [];
-		let buffsPngEl = new Image();
-		let buffsPngReady = false;
-		let buffsPngTodo = [];
-
-		// 初始化物品图标裁剪信息
-		if (typeof itemsPngInfo === 'undefined' && typeof itemCropArr !== 'undefined') {
-			itemsPngInfo = {};
-			const arr = itemCropArr.split('~');
-			for (let i = 0; i < arr.length; i++) {
-				const parts = arr[i].split(',');
-				itemsPngInfo[i + 1] = {
-					x: parseInt(parts[1]),
-					y: parseInt(parts[2]),
-					w: parseInt(parts[3]),
-					h: parseInt(parts[4])
-				};
-			}
-		}
-
-		// 清空画布
-		function ClearCanvas(iconEl) {
-			if (typeof (iconEl) == 'undefined' || iconEl == '') {
-				return
-			}
-			const ctx = iconEl.getContext('2d');
-			ctx.clearRect(0, 0, iconEl.width, iconEl.height);
-		}
-
-		// 设置物品图标
-		function SetItemIcon(id, iconEl) {
-			ClearCanvas(iconEl);
-
-			if (id == 0) {
-				return;
-			}
-
-			// 首次加载 items.png
-			if (itemsPngEl.src == '') {
-				itemsPngTodo.push(iconEl);
-				itemsPngEl.onload = () => {
-					itemsPngReady = true;
-					for (const el of itemsPngTodo) {
-						if (el == '' || typeof (el) == 'undefined') continue;
-						DrawItemIcon(parseInt(el.dataset['id']), el);
-					}
-					delete itemsPngTodo;
-				};
-				itemsPngEl.src = "img/items.png";
-			}
-
-			// 绘制图标
-			if (!itemsPngReady) {
-				iconEl.dataset['id'] = id;
-				itemsPngTodo.push(iconEl);
-			} else {
-				DrawItemIcon(id, iconEl);
-			}
-		}
-
-		// 绘制物品图标到对应的画板
-		function DrawItemIcon(id, iconEl) {
-			const info = itemsPngInfo[id.toString()];
-			if (typeof (info) == 'undefined') {
-				return;
-			}
-
-			const max = iconEl.height;
-			// 始终等比放大到画布大小
-			let scale = Math.min(max / info.w, max / info.h);
-			let dW = Math.round(info.w * scale);
-			let dH = Math.round(info.h * scale);
-			let dX = Math.floor((max - dW) / 2);
-			let dY = Math.floor((max - dH) / 2);
-
-			const ctx = iconEl.getContext('2d');
-
-			// 使用邻近插值算法（nearest-neighbor）进行缩放，保持像素风格
-			ctx.imageSmoothingEnabled = false;
-			ctx.mozImageSmoothingEnabled = false;
-			ctx.webkitImageSmoothingEnabled = false;
-			ctx.msImageSmoothingEnabled = false;
-
-			ctx.clearRect(0, 0, iconEl.width, iconEl.height);
-			ctx.drawImage(itemsPngEl, info.x, info.y, info.w, info.h, dX, dY, dW, dH);
-		}
-
-		// 获取物品图标canvas
-		function getItemIconCanvas(itemId) {
-			const canvas = document.createElement('canvas');
-			canvas.width = 96;
-			canvas.height = 96;
-			canvas.className = 'item-icon';
-			SetItemIcon(itemId, canvas);
-			return canvas;
-		}
-
-		// 设置buff图标
-		function SetBuffIcon(id, iconEl) {
-			ClearCanvas(iconEl);
-			if (id <= 0 || id > buffNames.length) {
-				return;
-			}
-
-			// 首次加载 buffs.png
-			if (buffsPngEl.src == '') {
-				buffsPngTodo.push(iconEl);
-				buffsPngEl.onload = () => {
-					buffsPngReady = true;
-					for (const el of buffsPngTodo) {
-						if (el == '' || typeof (el) == 'undefined') continue;
-						DrawBuffIcon(parseInt(el.dataset['id']), el);
-					}
-					delete buffsPngTodo;
-				};
-				buffsPngEl.src = "img/buffs.png";
-			}
-
-			if (!buffsPngReady) {
-				iconEl.dataset['id'] = id;
-				buffsPngTodo.push(iconEl);
-			} else {
-				DrawBuffIcon(id, iconEl);
-			}
-		}
-
-		// 绘制buff图标到对应的画板
-		function DrawBuffIcon(id, iconEl) {
-			// buffs.png分割备注
-			// 1、所有图片尺寸相同,都是 32px * 32px
-			// 2、每行20张图片，由左向右，自上而下
-			const imgW = 32;
-			const imgH = 32;
-			const rowNum = 20;
-			let imgX = (id - 1) % rowNum * imgW;
-			let imgY = Math.floor((id - 1) / rowNum) * imgH;
-
-			// 缩放到画布大小
-			const max = iconEl.height;
-			let dW = max;
-			let dH = max;
-			let dX = 0;
-			let dY = 0;
-
-			const ctx = iconEl.getContext('2d');
-			ctx.imageSmoothingEnabled = false;
-			ctx.mozImageSmoothingEnabled = false;
-			ctx.webkitImageSmoothingEnabled = false;
-			ctx.msImageSmoothingEnabled = false;
-
-			ctx.clearRect(0, 0, iconEl.width, iconEl.height);
-			ctx.drawImage(buffsPngEl, imgX, imgY, imgW, imgH, dX, dY, dW, dH);
-		}
-
-		// 获取buff图标canvas
-		function getBuffIconCanvas(buffId) {
-			const canvas = document.createElement('canvas');
-			canvas.width = 96;
-			canvas.height = 96;
-			canvas.className = 'item-icon';
-			SetBuffIcon(buffId, canvas);
-			return canvas;
-		}
-
-		// 执行搜索
-		function performSearch() {
-			const query = searchInput.value.trim().toLowerCase();
-			const isBuffSearch = searchType.value === 'buff';
-
-			if (!query) {
-				searchResults.innerHTML = `<div class="no-results">请输入${isBuffSearch ? 'buff' : '物品'}名称或ID进行搜索</div>`;
-				resultCount.textContent = '';
-				return;
-			}
-
-			let results = [];
-			// 判断是否为纯数字（ID查询）
-			const isNumericQuery = /^\d+$/.test(query);
-
-			if (isBuffSearch) {
-				// Buff查询
-				if (isNumericQuery) {
-					const targetId = parseInt(query);
-					for (let i = 0; i < buffNames.length; i++) {
-						const buffId = i + 1;
-						if (buffId === targetId || buffId.toString().startsWith(query)) {
-							results.push({ id: buffId, name: buffNames[i] || '(未命名)' });
-						}
-					}
-				} else {
-					for (let i = 0; i < buffNames.length; i++) {
-						const buffName = buffNames[i];
-						if (buffName && buffName.toLowerCase().includes(query)) {
-							results.push({ id: i + 1, name: buffName });
-						}
-					}
-				}
-			} else {
-				// 物品查询
-				if (isNumericQuery) {
-					const targetId = parseInt(query);
-					for (let i = 0; i < itemNames.length; i++) {
-						const itemId = i + 1;
-						if (itemId === targetId || itemId.toString().startsWith(query)) {
-							results.push({ id: itemId, name: itemNames[i] || '(未命名)' });
-						}
-					}
-				} else {
-					for (let i = 0; i < itemNames.length; i++) {
-						const itemName = itemNames[i];
-						if (itemName && itemName.toLowerCase().includes(query)) {
-							results.push({ id: i + 1, name: itemName });
-						}
-					}
-				}
-			}
-
-			displayResults(results, query, isNumericQuery, isBuffSearch);
-		}
-
-		// 显示搜索结果
-		function displayResults(results, query, isNumericQuery, isBuffSearch) {
-			if (results.length === 0) {
-				searchResults.innerHTML = `<div class="no-results">未找到匹配的${isBuffSearch ? 'buff' : '物品'}</div>`;
-				resultCount.textContent = '找到 0 个结果';
-				return;
-			}
-
-			// 高亮匹配的文字
-			function highlightMatch(text, query) {
-				const index = text.toLowerCase().indexOf(query);
-				if (index === -1) return text;
-				return text.substring(0, index) +
-					'<mark>' + text.substring(index, index + query.length) + '</mark>' +
-					text.substring(index + query.length);
-			}
-
-			// 高亮匹配的ID
-			function highlightId(id, query) {
-				const idStr = id.toString();
-				const index = idStr.indexOf(query);
-				if (index === -1) return idStr;
-				return idStr.substring(0, index) +
-					'<mark>' + idStr.substring(index, index + query.length) + '</mark>' +
-					idStr.substring(index + query.length);
-			}
-
-			let html = '';
-			results.forEach(item => {
-				const displayId = isNumericQuery ? highlightId(item.id, query) : item.id;
-				const displayName = isNumericQuery ? item.name : highlightMatch(item.name, query);
-				// 只有物品名称添加点击事件，buff 不添加
-				const nameClickAttr = isBuffSearch ? '' : ` onclick="openWiki('${item.name.replace(/'/g, "\\'")}' )"`;
-				const nameClass = isBuffSearch ? 'item-name buff-name' : 'item-name';
-				html += `
-					<div class="result-item">
-						<div class="item-icon" data-item-id="${item.id}"></div>
-						<div class="item-id" onclick="copyItemId(${item.id})">${displayId}</div>
-						<div class="${nameClass}"${nameClickAttr}>${displayName}</div>
-					</div>
-				`;
-			});
-
-			searchResults.innerHTML = html;
-			resultCount.textContent = `找到 ${results.length} 个结果`;
-
-			// 延迟加载图标
-			setTimeout(() => {
-				document.querySelectorAll('.item-icon[data-item-id]').forEach(iconEl => {
-					const itemId = parseInt(iconEl.dataset.itemId);
-					const canvas = isBuffSearch ? getBuffIconCanvas(itemId) : getItemIconCanvas(itemId);
-					iconEl.parentNode.replaceChild(canvas, iconEl);
-				});
-			}, 100);
-		}
-
-		// 复制物品ID
-		function copyItemId(id) {
-			navigator.clipboard.writeText(id.toString()).then(() => {
-				const toast = new bootstrap.Toast(copyToast);
-				toast.show();
-			});
-		}
-
-		// 打开 Terraria Wiki
-		function openWiki(itemName) {
-			const url = `https://terraria.wiki.gg/zh/wiki/${encodeURIComponent(itemName)}`;
-			window.open(url, '_blank');
-		}
-
-		// 事件监听
-		searchInput.addEventListener('input', () => {
-			clearTimeout(searchTimeout);
-			searchTimeout = setTimeout(performSearch, 300);
-		});
-
-		searchInput.addEventListener('keypress', (e) => {
-			if (e.key === 'Enter') {
-				performSearch();
-			}
-		});
-
-		searchBtn.addEventListener('click', performSearch);
-
-		// 切换查询类型
-		searchType.addEventListener('change', () => {
-			if (searchType.value === 'item') {
-				titleEl.textContent = '物品ID查询';
-				searchInput.placeholder = '输入物品名称或ID进行查询...';
-			} else {
-				titleEl.textContent = 'Buff ID查询';
-				searchInput.placeholder = '输入buff名称或ID进行查询...';
-			}
-			performSearch();
-		});
-
-		// 页面加载后聚焦输入框
-		searchInput.focus();
-	</script>
+	<script src="js/search.js"></script>
 </body>
 
 </html>
