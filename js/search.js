@@ -2,17 +2,16 @@
 const itemCollections = [
 	{ name: "桶", ids: "205,206,207,1128,3031,4820,5302,5364,3032,4872,5303,5304,4827,4824,4825,4826" },
 
-	{ name: "工具", ids: "3611, 5324,5329,5330,3485,2176,5295,367,5335,3183 " },
-	{ name: "微光", ids: "5337,5339,5338,5342,5341, 5340,5336,5343, 5335,5134,5364,5348,1007, 5380, 5347,5353,5357,5362, 5381,5355,5128,5427,5408,5374, " },
+	{ name: "工具...", ids: "3611, 5324,5329,5330,3485,2176,5295,367,5335,3183 " },
+	{ name: "微光...", ids: "5337,5339,5338,5342,5341, 5340,5336,5343, 5335,5134,5364,5348,1007, 5380, 5347,5353,5357,5362, 5381,5355,5128,5427,5408,5374, " },
 
 	{ name: "召唤物", ids: "560,43,70,1331,1133,5120,4988,556,544,557,5334,1293,2673,3601,267,4271,361,1315,2767,602,1844,1958" },
 	{ name: "宝藏袋", ids: "3318,3319,3320,3321,3322,3323,3324,3325,3326,3327,4957, 3328,3329,3330,3331,3332,3860,4782,5111,3861,3862" },
 	{ name: "永久增强", ids: "29,1291,109,3335,4382,5336,5326,5043,5337,5338,5339,5342,5341,5340,5343,5289" },
 
-	{ name: "渔业", ids: "2367,2368,2369, 2373,2374,2375,3721,4881,5064, 5139,4608,    2354,2355,2356, 4404,5341,3120,3037,3096,3036, 2289,2291,2293,2421,4442,4325,2292,2295,2296,2422,2294, 358, 3183" },
+	{ name: "渔业...", ids: "2367,2368,2369, 2373,2374,2375,3721,4881,5064, 5139,4608,    2354,2355,2356, 4404,5341,3120,3037,3096,3036, 2289,2291,2293,2421,4442,4325,2292,2295,2296,2422,2294, 358, 3183" },
 	{ name: "任务鱼", ids: "2450,2451,2452,2453,2454,2455,2456,2457,2458,2459,2460,2461,2462,2463,2464,2465,2466,2467,2468,2469,2470,2471,2472,2473,2474,2475,2476,2477,2478,2479,2480,2481,2482,2483,2484,2485,2486,2487,2488,4393,4394" },
 	{ name: "宝匣", ids: "2334,2335,2336,3203,3204,3205,3206,3207,3208,4405,3979,3980,3981,3982,3983,3984,3985,3986,3987,4406,4407,4408,4877,4878,5002,5003" },
-
 
 	{ name: "一级饱食", ids: "967,969,2425,4009,4014,4024,4030,4031,4033,4282,4283,4284,4285,4286,4287,4289,4290,4291,4292,4293,4294,4295,4296,4411,4614,4616,4617,4618,4619,4620,4621,4622,4624,4625,5009,5041,5275,5277,5278" },
 	{ name: "二级饱食", ids: "357,1787,2267,2268,2426,2427,3195,4012,4016,4017,4018,4019,4020,4021,4023,4026,4028,4032,4034,4035,4288,4297,4403,4623,5042,5092,5093" },
@@ -22,10 +21,8 @@ const itemCollections = [
 	{ name: "手机", ids: "17,18,393,395, 3084,3095,3118,3122,  3119,3099,3102,3121, 3120,3037,3096,3036, 3123, 50,3199, 3124, 4263,4819, 5358" },
 	{ name: "开发者物品", ids: "1566,1567,1568, 3368,3921,3922,3923,3924, 1554,1555,1556,1586,1587,1588, 1557,1558,1559,1585, 1580,1581,1582,1583, 1563,1564,1565,3582, 3226,3227,3228,3288, 3925,3926,3927,3928,3929, 3589,3590,3591,3592,3599, 665,666,667,668,3287, 3585,3586,3587,3588,3024, 1560,1561,1562,1584, 3583,3578,3579,3580,3581, 4755,4756,4757,4754, 4751,4752,4753,4750, 4747,4748,4749,4746, 4732,4733,4734,4730" },
 
-	{ name: "泰拉靴", ids: "54,128,1579,3200,4055, 285,405,212, 898,950, 1862,908, 906,193,4038,1323,863,907,1322,     4004" },
+	{ name: "泰拉靴", ids: "54,128,1579,3200,4055, 285,405,212, 898,950, 1862,908, 906,193,4038,1323,863,907,1322, 4004,5000" },
 	{ name: "鞋", ids: "128,54,1579,3200,4055,405,898,950,1862,863,907,908,3017,3990,3993,4822,4874,5000" },
-
-
 
 	{ name: "制作站", ids: "36,32,34,2827,354,33,221,35,716,3000,363,332,345,1791,398,1430,1120,2172,525,1220,524,1221,487,1551,3549,352,5008,995,996,2192,2194,2204,2198,2196,2197,998,4142,2193,2203,2195,966,997,5296" },
 	{ name: "团队", ids: "3621,3633,3634,3635,3636,3637,3622,3638,3639,3640,3641,3642,1969,1982" },
@@ -46,9 +43,7 @@ const friendCollections = [
 	{ name: "🫙 mix 🏹", ids: "987,2161,1358" },
 	{ name: "🚁 cart", ids: "5215,4021,4016,4029,5275,4015,4036,4030, 5451" },
 	{ name: "🐶 狗头", ids: "1254,1858,5215,1338,1299" },
-	{ name: "⭐ star", ids: "3061" },
-	{ name: "⚡ 高压电击", ids: "3061,4777" },
-	{ name: "🚥 起飞", ids: "250,4275" },
+	{ name: "⭐ star", ids: "3061,3061" },
 ];
 // ID范围配置
 const idRanges = [
@@ -69,7 +64,7 @@ function initSearchPage() {
 	const resultCount = document.getElementById('resultCount');
 	const copyToast = document.getElementById('copyToast');
 	const searchType = document.getElementById('searchType');
-	const titleEl = document.querySelector('h2');
+	const titleEl = document.querySelector('h3');
 	const collectionSelect = document.getElementById('collectionSelect');
 	const rangeSelect = document.getElementById('rangeSelect');
 	const classSelect = document.getElementById('classSelect');
@@ -78,6 +73,8 @@ function initSearchPage() {
 	const copyAll = document.getElementById('copyAll');
 	const copyIds = document.getElementById('copyIds');
 	const copyNames = document.getElementById('copyNames');
+
+	document.getElementById("versionText").innerText = "版本： v101 20260119"
 
 	// 保存当前搜索结果，供复制使用
 	let currentResults = [];
@@ -433,9 +430,50 @@ function initSearchPage() {
 			document.querySelectorAll('.item-icon[data-item-id]').forEach(iconEl => {
 				const itemId = parseInt(iconEl.dataset.itemId);
 				const canvas = isBuffSearch ? getBuffIconCanvas(itemId) : getItemIconCanvas(itemId);
+				// 为物品图标添加点击下载事件（buff图标不添加）
+				if (!isBuffSearch) {
+					canvas.style.cursor = 'pointer';
+					canvas.addEventListener('click', () => downloadItemIcon(itemId));
+				}
 				iconEl.parentNode.replaceChild(canvas, iconEl);
 			});
 		}, 100);
+	}
+
+	// 下载物品图标（缩放10倍）
+	function downloadItemIcon(itemId) {
+		const info = itemsPngInfo[itemId.toString()];
+		if (!info || !itemsPngReady) return;
+
+		// 创建新的canvas用于导出
+		const exportCanvas = document.createElement('canvas');
+		const scale = 10;
+		exportCanvas.width = info.w * scale;
+		exportCanvas.height = info.h * scale;
+
+		const ctx = exportCanvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
+		ctx.mozImageSmoothingEnabled = false;
+		ctx.webkitImageSmoothingEnabled = false;
+		ctx.msImageSmoothingEnabled = false;
+
+		// 绘制缩放后的图像
+		ctx.drawImage(itemsPngEl, info.x, info.y, info.w, info.h, 0, 0, exportCanvas.width, exportCanvas.height);
+
+		// 获取物品名称
+		const itemName = itemNames[itemId - 1] || 'unknown';
+
+		// 转换为blob并下载
+		exportCanvas.toBlob((blob) => {
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `Item_${itemId}-${itemName}.png`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+		}, 'image/png');
 	}
 
 	// 事件监听
@@ -462,30 +500,22 @@ function initSearchPage() {
 		classSelect.value = '';
 		friendSelect.value = '';
 		clearBtn.style.display = 'none';
+		document.body.style.backgroundColor = '#549EE6';
 		performSearch();
 	});
 
 	// 切换查询类型
 	searchType.addEventListener('change', () => {
-		const collectionContainer = document.getElementById('collectionSelectContainer');
-		const rangeContainer = document.getElementById('rangeSelectContainer');
-		const classContainer = document.getElementById('classSelectContainer');
-		const friendContainer = document.getElementById('friendSelectContainer');
 		const copyButtons = document.getElementById('copyButtons');
+		const filterSelectsGroup = document.getElementById('filterSelectsGroup');
 		if (searchType.value === 'item') {
 			titleEl.textContent = '物品ID查询';
 			searchInput.placeholder = '输入物品名称或ID进行查询...';
-			collectionContainer.style.display = 'block';
-			rangeContainer.style.display = 'block';
-			classContainer.style.display = 'block';
-			friendContainer.style.display = 'block';
+			filterSelectsGroup.style.display = 'flex';
 		} else {
 			titleEl.textContent = 'Buff ID查询';
 			searchInput.placeholder = '输入buff名称或ID进行查询...';
-			collectionContainer.style.display = 'none';
-			rangeContainer.style.display = 'none';
-			classContainer.style.display = 'none';
-			friendContainer.style.display = 'none';
+			filterSelectsGroup.style.display = 'none';
 			collectionSelect.value = '';
 			rangeSelect.value = '';
 			classSelect.value = '';
@@ -502,6 +532,12 @@ function initSearchPage() {
 		classSelect.value = '';
 		friendSelect.value = '';
 		clearBtn.style.display = 'none';
+		// 检查是否选中"开发者物品"
+		if (collectionSelect.options[collectionSelect.selectedIndex].text === '开发者物品') {
+			document.body.style.backgroundColor = '#D278E0';
+		} else {
+			document.body.style.backgroundColor = '#549EE6';
+		}
 		performSearch();
 	});
 
@@ -511,6 +547,7 @@ function initSearchPage() {
 		classSelect.value = '';
 		friendSelect.value = '';
 		clearBtn.style.display = 'none';
+		document.body.style.backgroundColor = '#549EE6';
 		performSearch();
 	});
 
@@ -520,6 +557,7 @@ function initSearchPage() {
 		rangeSelect.value = '';
 		friendSelect.value = '';
 		clearBtn.style.display = 'none';
+		document.body.style.backgroundColor = '#549EE6';
 		performSearch();
 	});
 
@@ -529,6 +567,20 @@ function initSearchPage() {
 		rangeSelect.value = '';
 		classSelect.value = '';
 		clearBtn.style.display = 'none';
+		// 检查是否选中"hf"
+		if (friendSelect.options[friendSelect.selectedIndex].text.includes('hf')) {
+			document.body.style.backgroundColor = '#B0A18F';
+		} else if (friendSelect.options[friendSelect.selectedIndex].text.includes('mz')) {
+			document.body.style.backgroundColor = '#46955C';
+		} else if (friendSelect.options[friendSelect.selectedIndex].text.includes('star')) {
+			document.body.style.backgroundColor = '#701844';
+		} else if (friendSelect.options[friendSelect.selectedIndex].text.includes('mix')) {
+			document.body.style.backgroundColor = '#535B4E';
+		} else if (friendSelect.options[friendSelect.selectedIndex].text.includes('高压电击')) {
+			document.body.style.backgroundColor = '#B39135';
+		} else {
+			document.body.style.backgroundColor = '#549EE6';
+		}
 		performSearch();
 	});
 

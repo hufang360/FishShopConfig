@@ -18,7 +18,7 @@
 			padding: 20px;
 		}
 
-		h2, #resultCount, .no-results {
+		h2, h3, #resultCount, .no-results {
 			color: white;
 		}
 
@@ -149,6 +149,12 @@
 		}
 
 select.form-select {
+	/* width: 140px; */
+	/* max-width: 180px; */
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.5);
+	color: white;
+	padding-right: 28px!important;
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='white' fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }
 /* 搜索页面选择器样式 */
@@ -176,15 +182,26 @@ select.form-select {
 	text-underline-offset: 4px;
 	font-weight: bold;
 }
+
+/* 响应式：手机竖屏时 filterSelectsGroup 换行 */
+@media (max-width: 768px) {
+	.d-flex.mb-2.gap-2 {
+		flex-wrap: wrap;
+	}
+	#filterSelectsGroup {
+		width: 100%;
+		flex-wrap: wrap;
+	}
+}
 	</style>
 </head>
 
 <body>
 	<div class="container search-container mt-1">
-		<h2 class="mb-3">物品ID查询</h2>
+		<h3 class="mb-2">物品ID查询</h3>
 
 		<!-- 搜索输入 -->
-		<div class="input-group input-group-lg mb-3">
+		<div class="input-group input-group-lg mb-2">
 			<input type="text" class="form-control" id="searchInput" placeholder="输入物品名称或ID进行查询..." autocomplete="off">
 			<button class="btn btn-outline-secondary" type="button" id="clearBtn" style="display: none;">&times;</button>
 			<button class="btn btn-outline-secondary" type="button" id="searchBtn">搜索</button>
@@ -198,33 +215,23 @@ select.form-select {
 				<option value="buff">Buff</option>
 			</select>
 		</div>
-
-		<!-- ID范围选择 -->
-		<div id="rangeSelectContainer">
-			<select class="form-select search-select" id="rangeSelect">
+		<!-- ID范围、集合、职业、水友选择 -->
+		<div class="input-group input-group-sm" id="filterSelectsGroup">
+			<select class="form-select" id="rangeSelect">
 				<option value="">ID范围</option>
 			</select>
-		</div>
-
-		<!-- 特殊集合选择 -->
-		<div id="collectionSelectContainer">
 			<select class="form-select search-select" id="collectionSelect">
 				<option value="">集合</option>
 			</select>
-		</div>
-		<!-- 职业集合选择 -->
-		<div id="classSelectContainer">
 			<select class="form-select search-select" id="classSelect">
 				<option value="">职业</option>
 			</select>
-		</div>
-		<!-- 水友集合选择 -->
-		<div id="friendSelectContainer">
 			<select class="form-select search-select" id="friendSelect">
 				<option value="">水友专属</option>
 			</select>
 		</div>
 		</div>
+		
 		<!-- 结果数量 -->
 		<div class="d-flex align-items-center mb-2">
 			<div id="resultCount" class="mx-1"></div>
@@ -243,6 +250,7 @@ select.form-select {
 	</div>
 
 	<div class="container search-container">
+		<div class="card-footer mx-2" style="text-indent: 2em;font-size: .75rem;color: rgba(255, 255, 255, 0.8)" id="versionText"></div>
 		<div class="card-footer text-muted mx-2" style="font-size: .75rem;">
 			<span style="color: rgba(255, 255, 255, 0.8)">参考连接：</span>
 			<a href="https://terraria.wiki.gg/zh/wiki/%E7%89%A9%E5%93%81_ID" target="_blank" class="a-white-muted mx-1">物品_ID</a>
