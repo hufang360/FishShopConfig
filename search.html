@@ -112,6 +112,22 @@
 			display: -webkit-box;
 			-webkit-line-clamp: 2;
 			-webkit-box-orient: vertical;
+			cursor: pointer;
+			transition: color 0.2s;
+		}
+
+		.item-name:hover {
+			color: rgba(255, 255, 255, 0.8);
+			text-decoration: underline;
+		}
+
+		.item-name.buff-name {
+			cursor: default;
+		}
+
+		.item-name.buff-name:hover {
+			color: white;
+			text-decoration: none;
 		}
 
 		mark {
@@ -437,11 +453,14 @@
 			results.forEach(item => {
 				const displayId = isNumericQuery ? highlightId(item.id, query) : item.id;
 				const displayName = isNumericQuery ? item.name : highlightMatch(item.name, query);
+				// 只有物品名称添加点击事件，buff 不添加
+				const nameClickAttr = isBuffSearch ? '' : ` onclick="openWiki('${item.name.replace(/'/g, "\\'")}' )"`;
+				const nameClass = isBuffSearch ? 'item-name buff-name' : 'item-name';
 				html += `
 					<div class="result-item">
 						<div class="item-icon" data-item-id="${item.id}"></div>
 						<div class="item-id" onclick="copyItemId(${item.id})">${displayId}</div>
-						<div class="item-name">${displayName}</div>
+						<div class="${nameClass}"${nameClickAttr}>${displayName}</div>
 					</div>
 				`;
 			});
@@ -465,6 +484,12 @@
 				const toast = new bootstrap.Toast(copyToast);
 				toast.show();
 			});
+		}
+
+		// 打开 Terraria Wiki
+		function openWiki(itemName) {
+			const url = `https://terraria.wiki.gg/zh/wiki/${encodeURIComponent(itemName)}`;
+			window.open(url, '_blank');
 		}
 
 		// 事件监听
