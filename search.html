@@ -145,6 +145,10 @@
 		<!-- 搜索输入 -->
 		<div class="input-group input-group-lg mb-3">
 			<input type="text" class="form-control" id="searchInput" placeholder="输入物品名称或ID进行查询..." autocomplete="off">
+			<select class="form-select" id="searchType" style="width:80px; max-width: 110px; background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.5); color: white;">
+				<option value="item" selected>物品</option>
+				<option value="buff">Buff</option>
+			</select>
 			<button class="btn btn-outline-secondary" type="button" id="searchBtn">搜索</button>
 		</div>
 
@@ -176,11 +180,16 @@
 		const searchResults = document.getElementById('searchResults');
 		const resultCount = document.getElementById('resultCount');
 		const copyToast = document.getElementById('copyToast');
+		const searchType = document.getElementById('searchType');
+		const titleEl = document.querySelector('h2');
 
 		let searchTimeout = null;
 		let itemsPngEl = new Image();
 		let itemsPngReady = false;
 		let itemsPngTodo = [];
+		let buffsPngEl = new Image();
+		let buffsPngReady = false;
+		let buffsPngTodo = [];
 
 		// 初始化物品图标裁剪信息
 		if (typeof itemsPngInfo === 'undefined' && typeof itemCropArr !== 'undefined') {
@@ -274,48 +283,133 @@
 			return canvas;
 		}
 
+		// 设置buff图标
+		function SetBuffIcon(id, iconEl) {
+			ClearCanvas(iconEl);
+			if (id <= 0 || id > buffNames.length) {
+				return;
+			}
+
+			// 首次加载 buffs.png
+			if (buffsPngEl.src == '') {
+				buffsPngTodo.push(iconEl);
+				buffsPngEl.onload = () => {
+					buffsPngReady = true;
+					for (const el of buffsPngTodo) {
+						if (el == '' || typeof (el) == 'undefined') continue;
+						DrawBuffIcon(parseInt(el.dataset['id']), el);
+					}
+					delete buffsPngTodo;
+				};
+				buffsPngEl.src = "img/buffs.png";
+			}
+
+			if (!buffsPngReady) {
+				iconEl.dataset['id'] = id;
+				buffsPngTodo.push(iconEl);
+			} else {
+				DrawBuffIcon(id, iconEl);
+			}
+		}
+
+		// 绘制buff图标到对应的画板
+		function DrawBuffIcon(id, iconEl) {
+			// buffs.png分割备注
+			// 1、所有图片尺寸相同,都是 32px * 32px
+			// 2、每行20张图片，由左向右，自上而下
+			const imgW = 32;
+			const imgH = 32;
+			const rowNum = 20;
+			let imgX = (id - 1) % rowNum * imgW;
+			let imgY = Math.floor((id - 1) / rowNum) * imgH;
+
+			// 缩放到画布大小
+			const max = iconEl.height;
+			let dW = max;
+			let dH = max;
+			let dX = 0;
+			let dY = 0;
+
+			const ctx = iconEl.getContext('2d');
+			ctx.imageSmoothingEnabled = false;
+			ctx.mozImageSmoothingEnabled = false;
+			ctx.webkitImageSmoothingEnabled = false;
+			ctx.msImageSmoothingEnabled = false;
+
+			ctx.clearRect(0, 0, iconEl.width, iconEl.height);
+			ctx.drawImage(buffsPngEl, imgX, imgY, imgW, imgH, dX, dY, dW, dH);
+		}
+
+		// 获取buff图标canvas
+		function getBuffIconCanvas(buffId) {
+			const canvas = document.createElement('canvas');
+			canvas.width = 96;
+			canvas.height = 96;
+			canvas.className = 'item-icon';
+			SetBuffIcon(buffId, canvas);
+			return canvas;
+		}
+
 		// 执行搜索
 		function performSearch() {
 			const query = searchInput.value.trim().toLowerCase();
+			const isBuffSearch = searchType.value === 'buff';
 
 			if (!query) {
-				searchResults.innerHTML = '<div class="no-results">请输入物品名称或ID进行搜索</div>';
+				searchResults.innerHTML = `<div class="no-results">请输入${isBuffSearch ? 'buff' : '物品'}名称或ID进行搜索</div>`;
 				resultCount.textContent = '';
 				return;
 			}
 
 			let results = [];
-
 			// 判断是否为纯数字（ID查询）
 			const isNumericQuery = /^\d+$/.test(query);
 
-			if (isNumericQuery) {
-				// ID查询：精确匹配或前缀匹配
-				const targetId = parseInt(query);
-				for (let i = 0; i < itemNames.length; i++) {
-					const itemId = i + 1;
-					// 精确匹配ID或ID前缀匹配
-					if (itemId === targetId || itemId.toString().startsWith(query)) {
-						results.push({ id: itemId, name: itemNames[i] || '(未命名)' });
+			if (isBuffSearch) {
+				// Buff查询
+				if (isNumericQuery) {
+					const targetId = parseInt(query);
+					for (let i = 0; i < buffNames.length; i++) {
+						const buffId = i + 1;
+						if (buffId === targetId || buffId.toString().startsWith(query)) {
+							results.push({ id: buffId, name: buffNames[i] || '(未命名)' });
+						}
+					}
+				} else {
+					for (let i = 0; i < buffNames.length; i++) {
+						const buffName = buffNames[i];
+						if (buffName && buffName.toLowerCase().includes(query)) {
+							results.push({ id: i + 1, name: buffName });
+						}
 					}
 				}
 			} else {
-				// 名称查询：部分匹配
-				for (let i = 0; i < itemNames.length; i++) {
-					const itemName = itemNames[i];
-					if (itemName && itemName.toLowerCase().includes(query)) {
-						results.push({ id: i + 1, name: itemName });
+				// 物品查询
+				if (isNumericQuery) {
+					const targetId = parseInt(query);
+					for (let i = 0; i < itemNames.length; i++) {
+						const itemId = i + 1;
+						if (itemId === targetId || itemId.toString().startsWith(query)) {
+							results.push({ id: itemId, name: itemNames[i] || '(未命名)' });
+						}
+					}
+				} else {
+					for (let i = 0; i < itemNames.length; i++) {
+						const itemName = itemNames[i];
+						if (itemName && itemName.toLowerCase().includes(query)) {
+							results.push({ id: i + 1, name: itemName });
+						}
 					}
 				}
 			}
 
-			displayResults(results, query, isNumericQuery);
+			displayResults(results, query, isNumericQuery, isBuffSearch);
 		}
 
 		// 显示搜索结果
-		function displayResults(results, query, isNumericQuery) {
+		function displayResults(results, query, isNumericQuery, isBuffSearch) {
 			if (results.length === 0) {
-				searchResults.innerHTML = '<div class="no-results">未找到匹配的物品</div>';
+				searchResults.innerHTML = `<div class="no-results">未找到匹配的${isBuffSearch ? 'buff' : '物品'}</div>`;
 				resultCount.textContent = '找到 0 个结果';
 				return;
 			}
@@ -359,7 +453,7 @@
 			setTimeout(() => {
 				document.querySelectorAll('.item-icon[data-item-id]').forEach(iconEl => {
 					const itemId = parseInt(iconEl.dataset.itemId);
-					const canvas = getItemIconCanvas(itemId);
+					const canvas = isBuffSearch ? getBuffIconCanvas(itemId) : getItemIconCanvas(itemId);
 					iconEl.parentNode.replaceChild(canvas, iconEl);
 				});
 			}, 100);
@@ -386,6 +480,18 @@
 		});
 
 		searchBtn.addEventListener('click', performSearch);
+
+		// 切换查询类型
+		searchType.addEventListener('change', () => {
+			if (searchType.value === 'item') {
+				titleEl.textContent = '物品ID查询';
+				searchInput.placeholder = '输入物品名称或ID进行查询...';
+			} else {
+				titleEl.textContent = 'Buff ID查询';
+				searchInput.placeholder = '输入buff名称或ID进行查询...';
+			}
+			performSearch();
+		});
 
 		// 页面加载后聚焦输入框
 		searchInput.focus();
