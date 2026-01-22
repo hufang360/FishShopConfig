@@ -1,21 +1,23 @@
+document.getElementById("versionText").innerText = "版本： v102 20260123"
+
 // 集合1
 const itemCollections = [
 	{ name: "桶", ids: "205,206,207,1128,3031,4820,5302,5364,3032,4872,5303,5304,4827,4824,4825,4826" },
 
-	{ name: "工具...", ids: "3611, 5324,5329,5330,3485,2176,5295,367,5335,3183 " },
+	{ name: "工具...", ids: "3061,3611, 4056, 5324,5329,5330,3485,2176,5295,367,5335,3183 " },
 	{ name: "微光...", ids: "5337,5339,5338,5342,5341, 5340,5336,5343, 5335,5134,5364,5348,1007, 5380, 5347,5353,5357,5362, 5381,5355,5128,5427,5408,5374, " },
 
 	{ name: "召唤物", ids: "560,43,70,1331,1133,5120,4988,556,544,557,5334,1293,2673,3601,267,4271,361,1315,2767,602,1844,1958" },
 	{ name: "宝藏袋", ids: "3318,3319,3320,3321,3322,3323,3324,3325,3326,3327,4957, 3328,3329,3330,3331,3332,3860,4782,5111,3861,3862" },
 	{ name: "永久增强", ids: "29,1291,109,3335,4382,5336,5326,5043,5337,5338,5339,5342,5341,5340,5343,5289" },
 
-	{ name: "渔业...", ids: "2367,2368,2369, 2373,2374,2375,3721,4881,5064, 5139,4608,    2354,2355,2356, 4404,5341,3120,3037,3096,3036, 2289,2291,2293,2421,4442,4325,2292,2295,2296,2422,2294, 358, 3183" },
+	{ name: "渔业...", ids: "2367,2368,2369, 2373,2374,2375,3721,4881,5064, 5139,4608, 2354,2355,2356, 4404,5341,3120,3037,3096,3036, 2289,2291,2293,2421,4442,4325,2292,2295,2296,2422,2294, 3183,358 " },
 	{ name: "任务鱼", ids: "2450,2451,2452,2453,2454,2455,2456,2457,2458,2459,2460,2461,2462,2463,2464,2465,2466,2467,2468,2469,2470,2471,2472,2473,2474,2475,2476,2477,2478,2479,2480,2481,2482,2483,2484,2485,2486,2487,2488,4393,4394" },
 	{ name: "宝匣", ids: "2334,2335,2336,3203,3204,3205,3206,3207,3208,4405,3979,3980,3981,3982,3983,3984,3985,3986,3987,4406,4407,4408,4877,4878,5002,5003" },
 
 	{ name: "一级饱食", ids: "967,969,2425,4009,4014,4024,4030,4031,4033,4282,4283,4284,4285,4286,4287,4289,4290,4291,4292,4293,4294,4295,4296,4411,4614,4616,4617,4618,4619,4620,4621,4622,4624,4625,5009,5041,5275,5277,5278" },
 	{ name: "二级饱食", ids: "357,1787,2267,2268,2426,2427,3195,4012,4016,4017,4018,4019,4020,4021,4023,4026,4028,4032,4034,4035,4288,4297,4403,4623,5042,5092,5093" },
-	{ name: "三级饱食", ids: "1911,1919,1920,3532,4011,4013,4015,4022,4025,4027,4029,4036,4037,4615,1911,1919,1920,3532,4011,4013,4015,4022,4025,4027,4029,4036,4037,4615" },
+	{ name: "三级饱食", ids: "1911,1919,1920,3532,4011,4013,4015,4022,4025,4027,4029,4036,4037,4615" },
 
 	{ name: "天顶剑", ids: "3507,989,1123,65,3018,1826,2880,3065,3063,757,  190,155,121,46,795,273,675, 368,674, 4956" },
 	{ name: "手机", ids: "17,18,393,395, 3084,3095,3118,3122,  3119,3099,3102,3121, 3120,3037,3096,3036, 3123, 50,3199, 3124, 4263,4819, 5358" },
@@ -38,12 +40,12 @@ const classCollections = [
 
 // 水友专属集合
 const friendCollections = [
-	{ name: "🕷 hf 🕷", ids: "4444,3611,4269,4761,4563,2493,5098, 4955, 5007, 5099, 4797, 4747,4748,4749,4746," },
-	{ name: "🐽 mz 🦈", ids: "2673" },
+	{ name: "🕷 hf 🕷", ids: "4444,3611,4269,4761,4563,2493,5098, 4955, 5007, 5099, 4797, 4747,4748,4749,4746, 4989,4954" },
+	{ name: "🐽 mz 🦈", ids: "2673, 2498,2499,2500" },
 	{ name: "🫙 mix 🏹", ids: "987,2161,1358" },
 	{ name: "🚁 cart", ids: "5215,4021,4016,4029,5275,4015,4036,4030, 5451" },
 	{ name: "🐶 狗头", ids: "1254,1858,5215,1338,1299" },
-	{ name: "⭐ star", ids: "3061,3061" },
+	{ name: "⭐ star", ids: "3061,3611,5335" },
 ];
 // ID范围配置
 const idRanges = [
@@ -53,6 +55,22 @@ const idRanges = [
 	{ start: 2001, end: 3000 },
 	{ start: 1001, end: 2000 },
 	{ start: 1, end: 1000 },
+];
+
+// 特殊物品别名映射：别名 -> 物品ID数组
+// 当输入匹配这些别名时，会额外显示对应的物品
+const itemAliases = [
+	{ name: "磁铁", ids: "2219,5010" },
+	{ name: "翱翔", ids: "4989,4954" },
+	{ name: "宏伟蓝图", ids: "3611" },
+];
+
+// ------
+
+// Buff ID范围配置
+const buffIdRanges = [
+	{ start: 1, end: 201 },
+	{ start: 201, end: 400 },
 ];
 
 // 初始化页面
@@ -70,11 +88,11 @@ function initSearchPage() {
 	const classSelect = document.getElementById('classSelect');
 	const friendSelect = document.getElementById('friendSelect');
 	const copyButtons = document.getElementById('copyButtons');
+	const buffRangeSelect = document.getElementById('buffRangeSelect');
+	const buffRangeSelectGroup = document.getElementById('buffRangeSelectGroup');
 	const copyAll = document.getElementById('copyAll');
 	const copyIds = document.getElementById('copyIds');
 	const copyNames = document.getElementById('copyNames');
-
-	document.getElementById("versionText").innerText = "版本： v101 20260119"
 
 	// 保存当前搜索结果，供复制使用
 	let currentResults = [];
@@ -93,6 +111,9 @@ function initSearchPage() {
 
 	// 动态生成水友专属集合选项
 	populateFriendOptions(friendSelect);
+
+	// 动态生成Buff ID范围选项
+	populateBuffRangeOptions(buffRangeSelect);
 
 	let searchTimeout = null;
 	let itemsPngEl = new Image();
@@ -269,6 +290,33 @@ function initSearchPage() {
 		const rangeValue = rangeSelect.value;
 		const classValue = classSelect.value;
 		const friendValue = friendSelect.value;
+		const buffRangeValue = buffRangeSelect.value;
+
+		// Buff范围查询模式
+		if (buffRangeValue && isBuffSearch) {
+			const range = buffRangeValue.substring(10).split('-');
+			const start = parseInt(range[0]);
+			const end = parseInt(range[1]);
+			let results = [];
+			for (let id = start; id <= end && id <= buffNames.length; id++) {
+				results.push({ id: id, name: buffNames[id - 1] || '(未命名)' });
+			}
+
+			// 如果有搜索关键词，进行过滤
+			if (query) {
+				const isNumericQuery = /^\d+$/.test(query);
+				results = results.filter(item => {
+					if (isNumericQuery) {
+						return item.id.toString().startsWith(query);
+					} else {
+						return item.name.toLowerCase().includes(query);
+					}
+				});
+			}
+
+			displayResults(results, query, query ? /^\d+$/.test(query) : false, isBuffSearch);
+			return;
+		}
 
 		// 如果选择了集合但不是buff模式
 		if ((collectionValue || rangeValue || classValue || friendValue) && isBuffSearch) {
@@ -328,8 +376,19 @@ function initSearchPage() {
 		}
 
 		let results = [];
+		let matchedAlias = null;
 		// 判断是否为纯数字（ID查询）
 		const isNumericQuery = /^\d+$/.test(query);
+
+		// 检查别名映射（仅物品模式）
+		if (!isBuffSearch && !isNumericQuery) {
+			for (const { name, ids } of itemAliases) {
+				if (query.includes(name) || name.includes(query)) {
+					matchedAlias = ids;
+					break;
+				}
+			}
+		}
 
 		if (isBuffSearch) {
 			// Buff查询
@@ -360,12 +419,31 @@ function initSearchPage() {
 					}
 				}
 			} else {
+				// 使用 Set 避免重复结果
+				const resultIds = new Set();
+
+				// 如果匹配到别名，先添加别名对应的物品
+				if (matchedAlias) {
+					const ids = matchedAlias.split(',').map(id => parseInt(id.trim()));
+					for (const id of ids) {
+						if (id > 0 && id <= itemNames.length) {
+							resultIds.add(id);
+						}
+					}
+				}
+
+				// 正常的名称匹配搜索
 				for (let i = 0; i < itemNames.length; i++) {
 					const itemName = itemNames[i];
 					if (itemName && itemName.toLowerCase().includes(query)) {
-						results.push({ id: i + 1, name: itemName });
+						resultIds.add(i + 1);
 					}
 				}
+
+				// 转换为结果数组并按ID排序
+				results = Array.from(resultIds)
+					.sort((a, b) => a - b)
+					.map(id => ({ id: id, name: itemNames[id - 1] || '(未命名)' }));
 			}
 		}
 
@@ -430,9 +508,11 @@ function initSearchPage() {
 			document.querySelectorAll('.item-icon[data-item-id]').forEach(iconEl => {
 				const itemId = parseInt(iconEl.dataset.itemId);
 				const canvas = isBuffSearch ? getBuffIconCanvas(itemId) : getItemIconCanvas(itemId);
-				// 为物品图标添加点击下载事件（buff图标不添加）
-				if (!isBuffSearch) {
-					canvas.style.cursor = 'pointer';
+				// 为物品图标添加点击下载事件
+				canvas.style.cursor = 'pointer';
+				if (isBuffSearch) {
+					canvas.addEventListener('click', () => downloadBuffIcon(itemId));
+				} else {
 					canvas.addEventListener('click', () => downloadItemIcon(itemId));
 				}
 				iconEl.parentNode.replaceChild(canvas, iconEl);
@@ -476,6 +556,50 @@ function initSearchPage() {
 		}, 'image/png');
 	}
 
+	// 下载buff图标（缩放10倍）
+	function downloadBuffIcon(buffId) {
+		if (!buffsPngReady) return;
+
+		// buffs.png分割备注
+		// 1、所有图片尺寸相同,都是 32px * 32px
+		// 2、每行20张图片，由左向右，自上而下
+		const imgW = 32;
+		const imgH = 32;
+		const rowNum = 20;
+		let imgX = (buffId - 1) % rowNum * imgW;
+		let imgY = Math.floor((buffId - 1) / rowNum) * imgH;
+
+		// 创建新的canvas用于导出
+		const exportCanvas = document.createElement('canvas');
+		const scale = 10;
+		exportCanvas.width = imgW * scale;
+		exportCanvas.height = imgH * scale;
+
+		const ctx = exportCanvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
+		ctx.mozImageSmoothingEnabled = false;
+		ctx.webkitImageSmoothingEnabled = false;
+		ctx.msImageSmoothingEnabled = false;
+
+		// 绘制缩放后的图像
+		ctx.drawImage(buffsPngEl, imgX, imgY, imgW, imgH, 0, 0, exportCanvas.width, exportCanvas.height);
+
+		// 获取buff名称
+		const buffName = buffNames[buffId - 1] || 'unknown';
+
+		// 转换为blob并下载
+		exportCanvas.toBlob((blob) => {
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `Buff_${buffId}-${buffName}.png`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+		}, 'image/png');
+	}
+
 	// 事件监听
 	searchInput.addEventListener('input', () => {
 		// 控制清除按钮显示/隐藏
@@ -499,6 +623,7 @@ function initSearchPage() {
 		rangeSelect.value = '';
 		classSelect.value = '';
 		friendSelect.value = '';
+		buffRangeSelect.value = '';
 		clearBtn.style.display = 'none';
 		document.body.style.backgroundColor = '#549EE6';
 		performSearch();
@@ -512,14 +637,17 @@ function initSearchPage() {
 			titleEl.textContent = '物品ID查询';
 			searchInput.placeholder = '输入物品名称或ID进行查询...';
 			filterSelectsGroup.style.display = 'flex';
+			buffRangeSelectGroup.style.display = 'none';
 		} else {
 			titleEl.textContent = 'Buff ID查询';
 			searchInput.placeholder = '输入buff名称或ID进行查询...';
 			filterSelectsGroup.style.display = 'none';
+			buffRangeSelectGroup.style.display = 'flex';
 			collectionSelect.value = '';
 			rangeSelect.value = '';
 			classSelect.value = '';
 			friendSelect.value = '';
+			buffRangeSelect.value = '';
 			// 隐藏复制按钮
 			copyButtons.style.display = 'none';
 		}
@@ -581,6 +709,13 @@ function initSearchPage() {
 		} else {
 			document.body.style.backgroundColor = '#549EE6';
 		}
+		performSearch();
+	});
+
+	// Buff范围选择变化时自动搜索
+	buffRangeSelect.addEventListener('change', () => {
+		clearBtn.style.display = 'none';
+		document.body.style.backgroundColor = '#549EE6';
 		performSearch();
 	});
 
@@ -666,6 +801,19 @@ function populateFriendOptions(selectElement) {
 		const option = document.createElement('option');
 		option.value = collection.ids;
 		option.textContent = collection.name;
+		selectElement.appendChild(option);
+	});
+}
+
+// 动态生成Buff ID范围选项
+function populateBuffRangeOptions(selectElement) {
+	// 保留第一个默认选项
+	selectElement.innerHTML = '<option value="">ID范围</option>';
+
+	buffIdRanges.forEach(range => {
+		const option = document.createElement('option');
+		option.value = `buffRange:${range.start}-${range.end}`;
+		option.textContent = `${range.start}～${range.end}`;
 		selectElement.appendChild(option);
 	});
 }
