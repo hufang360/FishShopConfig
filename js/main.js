@@ -871,7 +871,7 @@ function SetItemIcon(id, iconEl) {
 			}
 			delete itemsPngTodo
 		}
-		itemsPngEl.src = "img/items.png"
+		itemsPngEl.src = "img/items.png?0128"
 	}
 	// 绘制图标
 	if (!itemsPngReady) {
