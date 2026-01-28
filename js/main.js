@@ -15,7 +15,7 @@ var prefixNames = []
 var itemsPngInfo = {}
 InitSpriteEl()
 
-const ItemCount = 5455
+const ItemCount = 6144
 const NpcCount = 687
 // const BuffCount = 354
 
